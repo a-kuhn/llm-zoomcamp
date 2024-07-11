@@ -1,5 +1,6 @@
 from api.endpoints.search import retrieve_documents
 from api.endpoints.generate import get_openai_answer, build_prompt
+import argparse
 
 
 def qa_bot(question: str, course: str = None) -> str:
@@ -16,8 +17,14 @@ def qa_bot(question: str, course: str = None) -> str:
 
 
 def main():
-    sample_question = "How do I execute a command in a running docker container?"
-    filter = {"course": "machine-learning-zoomcamp"}
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-q", "--question", type=str, help="The question to ask")
+    parser.add_argument("-f", "--filter", type=str, help="The course filter to apply")
+
+    args = parser.parse_args()
+
+    sample_question = args.question
+    filter = {"course": args.filter} if args.filter else None
 
     response, scores = retrieve_documents(
         query=sample_question, max_results=3, filter=filter
